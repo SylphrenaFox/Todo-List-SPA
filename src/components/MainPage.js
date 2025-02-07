@@ -1,17 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { debounce } from '../utils/debounce';
 import styles from '../App.module.css';
-import {
-	useRequestGetTodos,
-	useRequestAddTodo,
-	useRequestUpdateTodo,
-	useRequestDeleteTodo,
-} from '../hooks';
+import { useRequestGetTodos, useRequestAddTodo } from '../hooks';
 
 export const MainPage = () => {
-	const navigate = useNavigate();
 	const [todos, setTodos] = useState([]);
 	const [todoItem, setTodoItem] = useState('');
 	const [searchQuery, setSearchQuery] = useState('');
@@ -19,8 +13,6 @@ export const MainPage = () => {
 
 	const { isLoading } = useRequestGetTodos(todos, setTodos);
 	const { requestAddTodo, isCreating } = useRequestAddTodo(todos, setTodos);
-	const { requestUpdateTodo, isUpdating } = useRequestUpdateTodo(todos, setTodos);
-	const { requestDeleteTodo, isDeleting } = useRequestDeleteTodo(todos, setTodos);
 
 	const handleSubmitButton = (event) => {
 		event.preventDefault();
@@ -75,15 +67,15 @@ export const MainPage = () => {
 				value={searchQuery}
 				onChange={handleSearchChange}
 			/>
-			{sortedTodos.map(({ id, title }) => (
-				<div
-					key={id}
-					className={styles.todoItem}
-					onClick={() => navigate(`/task/${id}`)}
-				>
-					{title}
-				</div>
-			))}
+			{isLoading ? (
+				<div className={styles.loader}></div>
+			) : (
+				sortedTodos.map(({ id, title, completed }) => (
+					<div key={id} className={styles.todoItem}>
+						<Link to={`/task/${id}`}>{title}</Link>
+					</div>
+				))
+			)}
 		</div>
 	);
 };

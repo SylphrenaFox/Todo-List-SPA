@@ -1,15 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import styles from '../App.module.css';
+import { useRequestDeleteTodo, useRequestUpdateTodo } from '../hooks';
 
-export const Task = ({
-	todos,
-	requestUpdateTodo,
-	requestDeleteTodo,
-	isUpdating,
-	isDeleting,
-	isLoading,
-}) => {
+export const Task = ({ todos, setTodos, isLoading }) => {
+	const { requestUpdateTodo, isUpdating } = useRequestUpdateTodo(todos, setTodos);
+	const { requestDeleteTodo, isDeleting } = useRequestDeleteTodo(todos, setTodos);
+
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const task = todos.find((task) => task.id.toString() === id);
