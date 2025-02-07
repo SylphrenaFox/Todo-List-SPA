@@ -1,20 +1,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { debounce } from '../utils/debounce';
 import styles from '../App.module.css';
+import {
+	useRequestGetTodos,
+	useRequestAddTodo,
+	useRequestUpdateTodo,
+	useRequestDeleteTodo,
+} from '../hooks';
 
-export const MainPage = ({
-	todoItem,
-	setTodoItem,
-	isCreating,
-	searchQuery,
-	isSortTurnedOn,
-	setIsSortTurnedOn,
-	setSearchQuery,
-	requestAddTodo,
-	todos,
-}) => {
+export const MainPage = () => {
 	const navigate = useNavigate();
+	const [todos, setTodos] = useState([]);
+	const [todoItem, setTodoItem] = useState('');
+	const [searchQuery, setSearchQuery] = useState('');
+	const [isSortTurnedOn, setIsSortTurnedOn] = useState(false);
+
+	const { isLoading } = useRequestGetTodos(todos, setTodos);
+	const { requestAddTodo, isCreating } = useRequestAddTodo(todos, setTodos);
+	const { requestUpdateTodo, isUpdating } = useRequestUpdateTodo(todos, setTodos);
+	const { requestDeleteTodo, isDeleting } = useRequestDeleteTodo(todos, setTodos);
 
 	const handleSubmitButton = (event) => {
 		event.preventDefault();
